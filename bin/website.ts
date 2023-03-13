@@ -1,21 +1,45 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { WebsiteStack } from '../lib/website-stack';
+import { PipelineStack } from '../lib/pipeline';
 
 const app = new cdk.App();
-new WebsiteStack(app, 'WebsiteStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const env = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+const name = app.node.tryGetContext('name');
+if (!name) {
+  throw new Error('Name variable missing.');
+}
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+const zone = app.node.tryGetContext('zone');
+if (!zone) {
+  throw new Error('Zone variable missing.');
+}
+
+const repo = app.node.tryGetContext('repo');
+if (!repo) {
+  throw new Error('Repo variable missing.');
+}
+
+const branch = app.node.tryGetContext('branch');
+if (!branch) {
+  throw new Error('Branch variable missing.');
+}
+
+new PipelineStack(app, name, {
+  env,
+  zone,
+  name,
+  repo,
+  branch,
+  email: app.node.tryGetContext('email'),
+  existingCertificateARN: app.node.tryGetContext('existingCertificateARN'),
 });
+
+// TODO ratelimiting: If it's the second one, you can implement a request throttling method. For example, you can make use of incoming requests to EC2 instances are free. So you can implement a queue in a free tier EC2 instance that forwards the requests to your Lambda but drops the requests when the rate is higher than a defined threshold. Keep in mind that you get charged for outgoing requests from EC2 to your Lambda Edge.
+
+// https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/static-site/static-site.ts
+// https://github.com/aws-samples/amazon-cloudfront-secure-static-site/blob/master/templates/custom-resource.yaml
+
+app.synth();

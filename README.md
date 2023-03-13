@@ -1,8 +1,6 @@
-# Welcome to your CDK TypeScript project
+# Loptr
 
-This is a blank project for CDK development with TypeScript.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Pipeline for my website https://loptr.link hosted on AWS.
 
 ## Useful commands
 
@@ -12,3 +10,27 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+
+# Setup your own site
+Configure cdk.json.
+
+Setup ssm parameters in deployment region
+| Parameter                         | Description                                 |
+|-----------------------------------|---------------------------------------------|
+| /_NAME_/email                     | Email to send service notifications         |
+| /_NAME_/certificateARN (optional) | ARN of an existing certificate for the host |
+| /_NAME_/connectionArn             | Github connection ARN                       |
+
+```
+npm i
+cdk bootstrap aws://<accountid>/<profile account's region>
+cdk bootstrap aws://<accountid>/us-east-1
+cdk deploy website
+```
+
+# Project init
+
+```
+cdk init app --language typescript
+npm init @eslint/config
+```
