@@ -28,8 +28,10 @@ export class PipelineStack extends cdk.Stack {
         installCommands: ['npm i -g npm@latest'],
         input: pipelines.CodePipelineSource.connection(props.repo, props.branch, {
           connectionArn,
+          codeBuildCloneOutput: true,
         }),
         commands: [
+          'git log',
           'npm ci',
           'npm run lint',
           'npx cdk synth',
