@@ -20,18 +20,20 @@ export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const connectionArn = ssm.StringParameter.valueFromLookup(this, `/${props.name}/connectionArn`);
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       pipelineName: id,
-      //useChangeSets: false, // be faster
       synth: new pipelines.CodeBuildStep('Synth', {
         installCommands: ['npm i -g npm@latest'],
         input: pipelines.CodePipelineSource.connection(props.repo, props.branch, {
-          connectionArn,
+          connectionArn: ssm.StringParameter.valueForStringParameter(this, `/${props.name}/connectionArn`),
           codeBuildCloneOutput: true,
         }),
+        env: {
+          PUBKEY: ssm.StringParameter.valueForStringParameter(this, `/${props.name}/pubkey`),
+        },
         commands: [
-          'git log',
+          'echo "$PUBKEY" | gpg --import',
+          'git verify-commit -v HEAD',
           'npm ci',
           'npm run lint',
           'npx cdk synth',
