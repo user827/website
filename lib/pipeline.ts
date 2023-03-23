@@ -68,6 +68,7 @@ export class PipelineStack extends cdk.Stack {
       email: props.email,
       existingCertificateARN: props.existingCertificateARN,
     });
+    cdk.Tags.of(website).add('Project', props.name);
     pipeline.addStage(website);
   }
 }

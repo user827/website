@@ -27,7 +27,7 @@ if (!branch) {
   throw new Error('Branch variable missing.');
 }
 
-new PipelineStack(app, name, {
+const pipeline = new PipelineStack(app, name, {
   env,
   zone,
   name,
@@ -36,6 +36,8 @@ new PipelineStack(app, name, {
   email: app.node.tryGetContext('email'),
   existingCertificateARN: app.node.tryGetContext('existingCertificateARN'),
 });
+
+cdk.Tags.of(pipeline).add('Project', name);
 
 // TODO ratelimiting: If it's the second one, you can implement a request throttling method. For example, you can make use of incoming requests to EC2 instances are free. So you can implement a queue in a free tier EC2 instance that forwards the requests to your Lambda but drops the requests when the rate is higher than a defined threshold. Keep in mind that you get charged for outgoing requests from EC2 to your Lambda Edge.
 
