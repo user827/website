@@ -19,6 +19,7 @@ Setup ssm parameters in deployment region
 |-----------------------------------|---------------------------------------------|
 | /_NAME_/email                     | Email to send service notifications         |
 | /_NAME_/certificateARN (optional) | ARN of an existing certificate for the host |
+|                                   | or 'dummy-value-for-...'                    |
 | /_NAME_/connectionArn             | Github connection ARN                       |
 | /_NAME_/pubkey                    | Key used to verify commits                  |
 
@@ -26,7 +27,7 @@ Setup ssm parameters in deployment region
 npm i
 cdk bootstrap aws://<accountid>/<profile account's region>
 cdk bootstrap aws://<accountid>/us-east-1
-cdk deploy website
+cdk deploy _NAME_
 ```
 
 # Project init
