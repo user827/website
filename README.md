@@ -7,7 +7,8 @@ Pipeline for my website https://loptr.link hosted on AWS.
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile
 * `npm run test`    perform the jest unit tests
-* `npx cdk deploy`      deploy this stack to your default AWS account/region
+* `npx cdk deploy <name>`      deploy this the CodePipeline stack to your default AWS account/region
+* `npx cdk deploy <name>/Website/**`      deploy the website manually
 * `npx cdk diff`        compare deployed stack with current state
 * `npx cdk synth --profile <profile>`       emits the synthesized CloudFormation template, for testing the changes
 * `npx cdk list`
