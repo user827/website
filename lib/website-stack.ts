@@ -50,7 +50,6 @@ export class WebsiteStack extends cdk.Stack {
       logBucket,
       defaultRootObject: 'index.html',
       domainNames: [zone.zoneName, 'www.'+zone.zoneName],
-      minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
       errorResponses: [
         {
           httpStatus: 403,

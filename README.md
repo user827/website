@@ -12,7 +12,7 @@ Pipeline for my website https://loptr.link hosted on AWS.
 * `cdk synth`       emits the synthesized CloudFormation template
 
 # Setup your own site
-Configure cdk.json.
+Configure cdk.json. The hosted zone for the domain needs to exist.
 
 Setup ssm parameters in deployment region
 | Parameter                         | Description                                 |
