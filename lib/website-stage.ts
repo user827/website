@@ -6,6 +6,7 @@ export interface WebsiteProps extends cdk.StageProps {
   zone: string;
   name: string;
   email: string;
+  useExistingCertifcateARN: boolean;
   existingCertificateARN: string | undefined;
 }
 
@@ -26,6 +27,7 @@ export class WebsiteStage extends cdk.Stage {
     const cert = new CertificateStack(this, 'CertificateStack', {
       env: { account: env.account, region: 'us-east-1' },
       zone: props.zone,
+      useExistingCertificateARN: props.useExistingCertifcateARN,
       existingCertificateARN: props.existingCertificateARN,
     });
 

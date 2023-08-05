@@ -20,6 +20,7 @@
     "name": "Loptr",
     "zone": "loptr.link",
     "repo": "user827/loptr",
+    "useExistingCertificateARN": false,
     "branch": "main",
 
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,

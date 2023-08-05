@@ -167,6 +167,7 @@ export class WebsiteStack extends cdk.Stack {
 
 export interface CertificateProps extends cdk.StackProps {
   zone: string;
+  useExistingCertificateARN: boolean;
   existingCertificateARN: string | undefined;
 }
 
@@ -186,7 +187,10 @@ export class CertificateStack extends cdk.Stack {
     const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.zone });
 
     // Certificates are expensive to make so try to do it only once and for all
-    if (props.existingCertificateARN) {
+    if (props.useExistingCertificateARN) {
+      if (!props.existingCertificateARN) {
+        throw new Error('certificateARN not set');
+      }
       this.certificate = acm.Certificate.fromCertificateArn(this, 'SiteCertificate', props.existingCertificateARN);
     } else {
       this.certificate = new acm.Certificate(this, 'SiteCertificate', {

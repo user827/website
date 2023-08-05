@@ -12,6 +12,7 @@ export interface PipelineStackProps extends cdk.StackProps {
   name: string;
   repo: string;
   branch: string;
+  useExistingCertifcateARN: boolean;
   existingCertificateARN: string | undefined;
   email: string | undefined;
 }
@@ -55,10 +56,9 @@ export class PipelineStack extends cdk.Stack {
     if (!props.email) {
       props.email = ssm.StringParameter.valueFromLookup(this, `/${props.name}/email`);
     }
-    if (!props.existingCertificateARN) {
-      props.existingCertificateARN = ssm.StringParameter.valueFromLookup(this, `/${props.name}/certificateARN`);
-      if (props.existingCertificateARN.startsWith('dummy-value-for-')) {
-        props.existingCertificateARN = undefined;
+    if (props.useExistingCertifcateARN) {
+      if (!props.existingCertificateARN) {
+        props.existingCertificateARN = ssm.StringParameter.valueFromLookup(this, `/${props.name}/certificateARN`);
       }
     }
     const website = new WebsiteStage(this, 'Website', {
@@ -66,6 +66,7 @@ export class PipelineStack extends cdk.Stack {
       name: props.name,
       zone: props.zone,
       email: props.email,
+      useExistingCertifcateARN: props.useExistingCertifcateARN,
       existingCertificateARN: props.existingCertificateARN,
     });
     cdk.Tags.of(website).add('Project', props.name);

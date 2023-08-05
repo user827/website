@@ -19,7 +19,6 @@ Setup ssm parameters in deployment region
 |-----------------------------------|---------------------------------------------|
 | /_NAME_/email                     | Email to send service notifications         |
 | /_NAME_/certificateARN (optional) | ARN of an existing certificate for the host |
-|                                   | or 'dummy-value-for-...'                    |
 | /_NAME_/connectionArn             | Github connection ARN                       |
 | /_NAME_/pubkey                    | Key used to verify commits                  |
 
