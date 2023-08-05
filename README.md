@@ -25,14 +25,14 @@ Setup ssm parameters in deployment region
 
 ```
 npm i
-cdk bootstrap aws://<accountid>/<profile account's region>
-cdk bootstrap aws://<accountid>/us-east-1
-cdk deploy _NAME_
+npx cdk bootstrap aws://<accountid>/<profile account's region>
+npx cdk bootstrap aws://<accountid>/us-east-1
+npx cdk deploy _NAME_
 ```
 
 # Project init
 
 ```
-cdk init app --language typescript
+npx cdk@latest init app --language typescript
 npm init @eslint/config
 ```
