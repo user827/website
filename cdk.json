@@ -17,9 +17,9 @@
     ]
   },
   "context": {
-    "name": "Loptr",
-    "zone": "loptr.link",
-    "repo": "user827/loptr",
+    "name": "website",
+    "zone": "user827.com",
+    "repo": "user827/website",
     "useExistingCertificateARN": false,
     "branch": "main",
 

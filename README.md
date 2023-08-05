@@ -1,6 +1,6 @@
-# Loptr
+# user827
 
-Pipeline for my website https://loptr.link hosted on AWS.
+Pipeline for my website https://user827.com hosted on AWS.
 
 ## Useful commands
 
