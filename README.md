@@ -7,9 +7,10 @@ Pipeline for my website https://loptr.link hosted on AWS.
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile
 * `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+* `npx cdk deploy`      deploy this stack to your default AWS account/region
+* `npx cdk diff`        compare deployed stack with current state
+* `npx cdk synth --profile <profile>`       emits the synthesized CloudFormation template, for testing the changes
+* `npx cdk list`
 
 # Setup your own site
 Configure cdk.json. The hosted zone for the domain needs to exist.

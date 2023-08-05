@@ -6,6 +6,12 @@ import { PipelineStack } from '../lib/pipeline';
 const app = new cdk.App();
 
 const env = { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION };
+if (!env.account) {
+  throw new Error('Default account needs to be defined');
+}
+if (!env.region) {
+  throw new Error('Default region needs to be defined');
+}
 
 const name = app.node.tryGetContext('name');
 if (!name) {

@@ -21,6 +21,11 @@ export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
+    // For the lookups to work
+    if (!props.env) {
+      throw new Error('env needs to be defined');
+    }
+
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       pipelineName: id,
       synth: new pipelines.CodeBuildStep('Synth', {
