@@ -1,6 +1,6 @@
 # user827
 
-Pipeline for my website https://user827.com hosted on AWS.
+Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 
 ## Useful commands
 
