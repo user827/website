@@ -39,6 +39,7 @@ export class WebsiteStack extends cdk.Stack {
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.RETAIN,
+      objectOwnership: s3.ObjectOwnership.OBJECT_WRITER,
     });
     logBucket.addLifecycleRule({
       expiration: Duration.days(7),

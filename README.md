@@ -28,6 +28,16 @@ Setup ssm parameters in deployment region
 npm i
 npx cdk bootstrap aws://<accountid>/<profile account's region>
 npx cdk bootstrap aws://<accountid>/us-east-1
+```
+
+Deploy the website to check everything is OK.
+```
+npx cdk deploy '_NAME_/Website/**'
+
+```
+
+Deploy the pipeline.
+```
 npx cdk deploy _NAME_
 ```
 
