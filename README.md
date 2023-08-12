@@ -31,7 +31,11 @@ npx cdk bootstrap aws://<accountid>/us-east-1
 npx cdk deploy _NAME_
 ```
 
-# Project init
+# Development
+
+* `npm update` update packages
+
+## Project init
 
 ```
 npx cdk@latest init app --language typescript
