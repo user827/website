@@ -8,6 +8,9 @@ export interface WebsiteProps extends cdk.StageProps {
 }
 
 export class WebsiteStage extends cdk.Stage {
+  public readonly s3: S3Stack;
+  public readonly website: WebsiteStack;
+
   constructor(scope: Construct, id: string, props: WebsiteProps) {
     super(scope, id, props);
 
@@ -16,15 +19,15 @@ export class WebsiteStage extends cdk.Stage {
     }
     const env = props.env;
 
-    const s3 = new S3Stack(this, 'S3Stack', {
+    this.s3 = new S3Stack(this, 'S3Stack', {
       env: { account: env.account, region: 'us-east-1' },
       zone: props.zone,
     });
 
-    new WebsiteStack(this, 'WebsiteStack', {
+    this.website = new WebsiteStack(this, 'WebsiteStack', {
       env: { account: env.account, region: 'us-east-1' },
-      cloudfrontOAI: s3.cloudfrontOAI,
-      siteBucket: s3.siteBucket,
+      cloudfrontOAI: this.s3.cloudfrontOAI,
+      siteBucket: this.s3.siteBucket,
       zone: props.zone,
       email: props.email,
     });

@@ -6,7 +6,7 @@ Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
+* `npx jest [--updateSnapshot]`    perform the jest unit tests
 * `npx cdk deploy <name>`      deploy this the CodePipeline stack to your default AWS account/region
 * `npx cdk deploy <name>/Website/**`      deploy the website manually
 * `npx cdk diff`        compare deployed stack with current state
@@ -20,7 +20,6 @@ Setup ssm parameters in deployment region
 | Parameter                         | Description                                 |
 |-----------------------------------|---------------------------------------------|
 | /_NAME_/email                     | Email to send service notifications         |
-| /_NAME_/certificateARN (optional) | ARN of an existing certificate for the host |
 | /_NAME_/connectionArn             | Github connection ARN                       |
 | /_NAME_/pubkey                    | Key used to verify commits                  |
 

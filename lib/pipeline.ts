@@ -40,6 +40,7 @@ export class PipelineStack extends cdk.Stack {
           'git verify-commit -v HEAD',
           'npm ci',
           'npm run lint',
+          'npm run test',
           'npx cdk synth',
         ],
         rolePolicyStatements: [
