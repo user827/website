@@ -22,7 +22,6 @@ import { Construct } from 'constructs';
 export interface WebsiteProps extends cdk.StackProps {
   cloudfrontOAI: cloudfront.IOriginAccessIdentity;
   siteBucket: s3.IBucket;
-  certificate: acm.ICertificate;
   zone: string;
   email: string;
 }
@@ -32,6 +31,12 @@ export class WebsiteStack extends cdk.Stack {
     super(scope, id, props);
 
     const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.zone });
+
+    const certificate = new acm.Certificate(this, 'SiteCertificate', {
+      domainName: zone.zoneName,
+      subjectAlternativeNames: ['www.'+zone.zoneName],
+      validation: acm.CertificateValidation.fromDns(zone),
+    });
 
     const logBucket = new s3.Bucket(this, 'LogBucket', {
       encryption: s3.BucketEncryption.S3_MANAGED,
@@ -47,7 +52,7 @@ export class WebsiteStack extends cdk.Stack {
 
     // CloudFront distribution
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {
-      certificate: props.certificate,
+      certificate,
       logBucket,
       defaultRootObject: 'index.html',
       domainNames: [zone.zoneName, 'www.'+zone.zoneName],
@@ -106,7 +111,7 @@ export class WebsiteStack extends cdk.Stack {
     const mRequests = new cloudwatch.Metric({
       namespace: 'AWS/CloudFront',
       metricName: 'Requests',
-      period: cdk.Duration.minutes(1),
+      period: cdk.Duration.minutes(10),
       statistic: cloudwatch.Stats.SUM,
       dimensionsMap: {
         DistributionId: distribution.distributionId,
@@ -115,8 +120,10 @@ export class WebsiteStack extends cdk.Stack {
       region: 'us-east-1',
     });
     const aRequests = mRequests.createAlarm(this, 'AlarmRequests', {
-      threshold: 1000,
-      evaluationPeriods: 1,
+      threshold: 100,
+      evaluationPeriods: 6,
+      datapointsToAlarm: 2,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     });
     aRequests.addAlarmAction(new actions.SnsAction(t));
 
@@ -142,7 +149,7 @@ export class WebsiteStack extends cdk.Stack {
     const m5xxErrors = new cloudwatch.Metric({
       namespace: 'AWS/CloudFront',
       metricName: '5xxErrorRate',
-      period: cdk.Duration.minutes(1),
+      period: cdk.Duration.minutes(10),
       statistic: cloudwatch.Stats.AVERAGE,
       dimensionsMap: {
         DistributionId: distribution.distributionId,
@@ -151,59 +158,24 @@ export class WebsiteStack extends cdk.Stack {
       region: 'us-east-1',
     });
 
+    const a5xxErrors = m5xxErrors.createAlarm(this, 'Alarm5xxErrors', {
+      threshold: 1, //percentage
+      evaluationPeriods: 5,
+      datapointsToAlarm: 2,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+    a5xxErrors.addAlarmAction(new actions.SnsAction(t));
+
     const wErrors = new cloudwatch.GraphWidget({
       stacked: true,
       title: 'Errors',
       left: [
         m4xxErrors,
-      ],
-      right: [
         m5xxErrors,
       ],
     });
 
     dashboard.addWidgets(wRequests, wErrors);
-  }
-}
-
-export interface CertificateProps extends cdk.StackProps {
-  zone: string;
-  useExistingCertificateARN: boolean;
-  existingCertificateARN: string | undefined;
-}
-
-
-export class CertificateStack extends cdk.Stack {
-  public readonly certificate: acm.ICertificate;
-
-  constructor(scope: Construct, id: string, props: CertificateProps) {
-    super(scope, id, props);
-    if (!props.env) {
-      throw new Error('need region');
-    }
-    if (props.env.region != 'us-east-1') {
-      throw new Error('wrong region');
-    }
-
-    const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.zone });
-
-    // Certificates are expensive to make so try to do it only once and for all
-    if (props.useExistingCertificateARN) {
-      if (!props.existingCertificateARN) {
-        throw new Error('certificateARN not set');
-      }
-      this.certificate = acm.Certificate.fromCertificateArn(this, 'SiteCertificate', props.existingCertificateARN);
-    } else {
-      this.certificate = new acm.Certificate(this, 'SiteCertificate', {
-        domainName: zone.zoneName,
-        subjectAlternativeNames: ['www.'+zone.zoneName],
-        validation: acm.CertificateValidation.fromDns(zone),
-      });
-      this.certificate.applyRemovalPolicy(RemovalPolicy.RETAIN);
-    }
-    new CfnOutput(this, 'Certificate', {
-      value: this.certificate.certificateArn,
-    });
   }
 }
 
@@ -227,8 +199,8 @@ export class S3Stack extends cdk.Stack {
       enforceSSL: true,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      //removalPolicy: RemovalPolicy.DESTROY,
+      //autoDeleteObjects: true,
     });
     new CfnOutput(this, 'Bucket', { value: this.siteBucket.bucketName });
 

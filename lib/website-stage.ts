@@ -1,13 +1,10 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { WebsiteStack, S3Stack, CertificateStack } from '../lib/website-stack';
+import { WebsiteStack, S3Stack } from '../lib/website-stack';
 
 export interface WebsiteProps extends cdk.StageProps {
   zone: string;
-  name: string;
   email: string;
-  useExistingCertifcateARN: boolean;
-  existingCertificateARN: string | undefined;
 }
 
 export class WebsiteStage extends cdk.Stage {
@@ -24,18 +21,10 @@ export class WebsiteStage extends cdk.Stage {
       zone: props.zone,
     });
 
-    const cert = new CertificateStack(this, 'CertificateStack', {
-      env: { account: env.account, region: 'us-east-1' },
-      zone: props.zone,
-      useExistingCertificateARN: props.useExistingCertifcateARN,
-      existingCertificateARN: props.existingCertificateARN,
-    });
-
     new WebsiteStack(this, 'WebsiteStack', {
       env: { account: env.account, region: 'us-east-1' },
       cloudfrontOAI: s3.cloudfrontOAI,
       siteBucket: s3.siteBucket,
-      certificate: cert.certificate,
       zone: props.zone,
       email: props.email,
     });
