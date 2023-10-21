@@ -27,7 +27,7 @@ export class PipelineStack extends cdk.Stack {
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       pipelineName: id,
       synth: new pipelines.CodeBuildStep('Synth', {
-        installCommands: ['npm i -g npm@latest'],
+        //installCommands: ['npm i -g npm@latest'],
         input: pipelines.CodePipelineSource.connection(props.repo, props.branch, {
           connectionArn: ssm.StringParameter.valueForStringParameter(this, `/${props.name}/connectionArn`),
           codeBuildCloneOutput: true,
