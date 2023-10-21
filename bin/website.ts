@@ -40,8 +40,6 @@ const pipeline = new PipelineStack(app, name, {
   repo,
   branch,
   email: app.node.tryGetContext('email'),
-  useExistingCertifcateARN: app.node.tryGetContext('useExistingCertifcateARN') || false,
-  existingCertificateARN: app.node.tryGetContext('existingCertificateARN'),
 });
 
 cdk.Tags.of(pipeline).add('Project', name);

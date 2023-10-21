@@ -12,6 +12,7 @@ Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 * `npx cdk diff`        compare deployed stack with current state
 * `npx cdk synth --profile <profile>`       emits the synthesized CloudFormation template, for testing the changes
 * `npx cdk list`
+* `npm update` update packages
 
 # Setup your own site
 Configure cdk.json. The hosted zone for the domain needs to exist.
@@ -39,10 +40,6 @@ Deploy the pipeline.
 ```
 npx cdk deploy _NAME_
 ```
-
-# Development
-
-* `npm update` update packages
 
 ## Project init
 
