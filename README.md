@@ -47,3 +47,7 @@ npx cdk deploy _NAME_
 npx cdk@latest init app --language typescript
 npm init @eslint/config
 ```
+
+# TODO
+
+It's cheaper for CloudFront to take a DDOS rather than using WAF to filter it?
