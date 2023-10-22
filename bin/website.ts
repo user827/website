@@ -18,9 +18,10 @@ async function main() {
   const name = 'website';
   const ssm = new SSMClient({ region: env.region });
   const ssmCmd = new GetParameterCommand({
-    Name: `/${name}/config.yaml`,
+    Name: `/${name}/config.yaml:2`,
   });
   const ssmOut: GetParameterCommandOutput = await ssm.send(ssmCmd);
+  console.log(`Using config version ${ssmOut.Parameter!.Version!}`);
   const config: PipelineStackProps = yaml.load(ssmOut.Parameter!.Value!) as PipelineStackProps;
   if (!config.zone) {
     throw new Error('Zone variable missing.');
