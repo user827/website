@@ -4,6 +4,7 @@ import { WebsiteStack, S3Stack } from '../lib/website-stack';
 
 export interface WebsiteProps extends cdk.StageProps {
   zone: string;
+  hostedZoneId: string;
   email: string;
 }
 
@@ -29,6 +30,7 @@ export class WebsiteStage extends cdk.Stage {
       cloudfrontOAI: this.s3.cloudfrontOAI,
       siteBucket: this.s3.siteBucket,
       zone: props.zone,
+      hostedZoneId: props.hostedZoneId,
       email: props.email,
     });
   }

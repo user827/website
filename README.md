@@ -15,17 +15,12 @@ Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 * `npm update` update packages
 
 # Setup your own site
-Configure cdk.json. The hosted zone for the domain needs to exist.
-
-Setup ssm parameters in deployment region
-| Parameter                         | Description                                 |
-|-----------------------------------|---------------------------------------------|
-| /_NAME_/email                     | Email to send service notifications         |
-| /_NAME_/connectionArn             | Github connection ARN                       |
-| /_NAME_/pubkey                    | Key used to verify commits                  |
+- Configure hosted zone for a domain.
+- Create a codestar connection for connectionArn.
+- Configure config.yaml using config.yaml.template.
 
 ```
-npm i
+npm ci
 npx cdk bootstrap aws://<accountid>/<profile account's region>
 npx cdk bootstrap aws://<accountid>/us-east-1
 ```
@@ -50,4 +45,7 @@ npm init @eslint/config
 
 # TODO
 
-It's cheaper for CloudFront to take a DDOS rather than using WAF to filter it?
+- It's cheaper for CloudFront to take a DDOS rather than using WAF to filter it?
+- Request increase for maxumun number of concurrently running build for
+  Linux/Small environment. see https://github.com/aws/aws-cdk/issues/17744
+

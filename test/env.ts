@@ -6,5 +6,6 @@ export const testEnv: WebsiteProps = {
     region: 'eu-north-1',
   },
   zone: 'test',
+  hostedZoneId: 'testId',
   email: 'test@test.test',
 };

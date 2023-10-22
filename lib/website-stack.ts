@@ -23,6 +23,7 @@ export interface WebsiteProps extends cdk.StackProps {
   cloudfrontOAI: cloudfront.IOriginAccessIdentity;
   siteBucket: s3.IBucket;
   zone: string;
+  hostedZoneId: string;
   email: string;
 }
 
@@ -30,7 +31,7 @@ export class WebsiteStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WebsiteProps) {
     super(scope, id, props);
 
-    const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.zone });
+    const zone = route53.PublicHostedZone.fromHostedZoneAttributes(this, 'Zone', { zoneName: props.zone, hostedZoneId: props.hostedZoneId });
 
     const certificate = new acm.Certificate(this, 'SiteCertificate', {
       domainName: zone.zoneName,

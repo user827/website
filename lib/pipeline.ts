@@ -1,7 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import {
-  aws_iam as iam,
-  aws_ssm as ssm,
   pipelines,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
@@ -9,31 +7,29 @@ import { WebsiteStage } from './website-stage';
 
 export interface PipelineStackProps extends cdk.StackProps {
   zone: string;
+  hostedZoneId: string;
   name: string;
   repo: string;
   branch: string;
-  email: string | undefined;
+  email: string;
+  connectionArn: string;
+  pubkey: string;
 }
 
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    // For the lookups to work
-    if (!props.env) {
-      throw new Error('env needs to be defined');
-    }
-
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       pipelineName: id,
       synth: new pipelines.CodeBuildStep('Synth', {
         //installCommands: ['npm i -g npm@latest'],
         input: pipelines.CodePipelineSource.connection(props.repo, props.branch, {
-          connectionArn: ssm.StringParameter.valueForStringParameter(this, `/${props.name}/connectionArn`),
+          connectionArn: props.connectionArn,
           codeBuildCloneOutput: true,
         }),
         env: {
-          PUBKEY: ssm.StringParameter.valueForStringParameter(this, `/${props.name}/pubkey`),
+          PUBKEY: props.pubkey,
         },
         commands: [
           'echo "$PUBKEY" | gpg --import',
@@ -43,26 +39,13 @@ export class PipelineStack extends cdk.Stack {
           'npm run test',
           'npx cdk synth',
         ],
-        rolePolicyStatements: [
-          new iam.PolicyStatement({
-            actions: ['sts:AssumeRole'],
-            resources: ['*'],
-            conditions: {
-              StringEquals: {
-                'iam:ResourceTag/aws-cdk:bootstrap-role': 'lookup',
-              },
-            },
-          }),
-        ],
       }),
     });
 
-    if (!props.email) {
-      props.email = ssm.StringParameter.valueFromLookup(this, `/${props.name}/email`);
-    }
     const website = new WebsiteStage(this, 'Website', {
       env: props.env,
       zone: props.zone,
+      hostedZoneId: props.hostedZoneId,
       email: props.email,
     });
     cdk.Tags.of(website).add('Project', props.name);

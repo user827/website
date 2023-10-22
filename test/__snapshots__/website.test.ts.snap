@@ -612,7 +612,7 @@ exports[`website 1`] = `
             ],
           },
         },
-        "HostedZoneId": "DUMMY",
+        "HostedZoneId": "testId",
         "Name": "www.test.",
         "Type": "A",
       },
@@ -637,7 +637,7 @@ exports[`website 1`] = `
             ],
           },
         },
-        "HostedZoneId": "DUMMY",
+        "HostedZoneId": "testId",
         "Name": "test.",
         "Type": "A",
       },
@@ -649,11 +649,11 @@ exports[`website 1`] = `
         "DomainValidationOptions": [
           {
             "DomainName": "test",
-            "HostedZoneId": "DUMMY",
+            "HostedZoneId": "testId",
           },
           {
             "DomainName": "www.test",
-            "HostedZoneId": "DUMMY",
+            "HostedZoneId": "testId",
           },
         ],
         "SubjectAlternativeNames": [

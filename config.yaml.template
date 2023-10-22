@@ -1,0 +1,16 @@
+env:
+  region:
+  account:
+name:
+zone:
+hostedZoneId:
+repo:
+branch:
+email:
+connectionArn:
+pubkey: |
+  -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+  ...
+
+  -----END PGP PUBLIC KEY BLOCK-----
