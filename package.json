@@ -31,6 +31,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.433.0",
     "aws-cdk-lib": "^2.90.0",
     "constructs": "^10.2.69",
     "js-yaml": "^4.1.0",

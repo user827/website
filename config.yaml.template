@@ -1,7 +1,3 @@
-env:
-  region:
-  account:
-name:
 zone:
 hostedZoneId:
 repo:

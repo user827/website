@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import {
+  aws_iam as iam,
   pipelines,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
@@ -38,6 +39,12 @@ export class PipelineStack extends cdk.Stack {
           'npm run lint',
           'npm run test',
           'npx cdk synth',
+        ],
+        rolePolicyStatements: [
+          new iam.PolicyStatement({
+            actions: ['ssm:GetParameter'],
+            resources: [`arn:aws:ssm:${this.region}:${this.account}:parameter/${props.name}/config.yaml`],
+          }),
         ],
       }),
     });
