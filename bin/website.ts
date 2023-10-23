@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
-import { exec } from 'child_process';
 import * as fs from 'fs';
-import { promisify } from 'util';
 import { SSMClient, GetParameterCommand, GetParameterCommandOutput } from '@aws-sdk/client-ssm';
 import * as cdk from 'aws-cdk-lib';
 import * as yaml from 'js-yaml';
 import { PipelineStack, PipelineStackProps } from '../lib/pipeline';
-const execp = promisify(exec);
 
 interface Config {
   name: string;
@@ -26,9 +23,7 @@ async function main() {
     throw new Error('Default region needs to be defined');
   }
 
-  const res = await execp('git branch --show-current');
-  const branch = res.stdout.trim();
-  const localconfig: Config = yaml.load(fs.readFileSync(`env/${branch}.yaml`, { encoding: 'utf-8' })) as Config;
+  const localconfig: Config = yaml.load(fs.readFileSync('env/main.yaml', { encoding: 'utf-8' })) as Config;
   if (!localconfig.name) {
     throw new Error('Name variable missing.');
   }
