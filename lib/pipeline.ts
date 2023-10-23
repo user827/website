@@ -75,6 +75,12 @@ export class PipelineStack extends cdk.Stack {
 
     const t = new sns.Topic(this, 'PipelineTopic', {});
     t.addSubscription(new subscriptions.EmailSubscription(props.email));
-    failedPipelineRule.addTarget(new event_targets.SnsTopic(t));
+    failedPipelineRule.addTarget(new event_targets.SnsTopic(t, {
+      message: events.RuleTargetInput.fromMultilineText(
+        `Pipeline ${id} failed!
+
+        Detail: ${events.EventField.fromPath('$.detail')}`,
+      ),
+    }));
   }
 }
