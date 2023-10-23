@@ -1,6 +1,10 @@
 import * as cdk from 'aws-cdk-lib';
 import {
+  aws_events as events,
+  aws_events_targets as event_targets,
   aws_iam as iam,
+  aws_sns as sns,
+  aws_sns_subscriptions as subscriptions,
   pipelines,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
@@ -57,5 +61,20 @@ export class PipelineStack extends cdk.Stack {
     });
     cdk.Tags.of(website).add('Project', props.name);
     pipeline.addStage(website);
+
+    const failedPipelineRule = new events.Rule(this, 'PipelineFailures', {
+      eventPattern: {
+        source: ['aws.codepipeline'],
+        detailType: ['CodePipeline Pipeline Execution State Change'],
+        detail: {
+          pipeline: [id],
+          state: ['FAILED'],
+        },
+      },
+    });
+
+    const t = new sns.Topic(this, 'PipelineTopic', {});
+    t.addSubscription(new subscriptions.EmailSubscription(props.email));
+    failedPipelineRule.addTarget(new event_targets.SnsTopic(t));
   }
 }
