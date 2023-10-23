@@ -4,7 +4,7 @@
 node_modules
 
 cdk.context.json
-config.yaml
+env.mk
 
 # CDK asset staging directory
 .cdk.staging

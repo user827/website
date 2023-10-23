@@ -1,8 +1,18 @@
 #!/usr/bin/env node
+import 'source-map-support/register';
+import { exec } from 'child_process';
+import * as fs from 'fs';
+import { promisify } from 'util';
 import { SSMClient, GetParameterCommand, GetParameterCommandOutput } from '@aws-sdk/client-ssm';
 import * as cdk from 'aws-cdk-lib';
 import * as yaml from 'js-yaml';
 import { PipelineStack, PipelineStackProps } from '../lib/pipeline';
+const execp = promisify(exec);
+
+interface Config {
+  name: string;
+  ssm_config_version: number;
+}
 
 // CommonJS requirement
 async function main() {
@@ -15,10 +25,20 @@ async function main() {
   if (!env.region) {
     throw new Error('Default region needs to be defined');
   }
-  const name = 'website';
+
+  const res = await execp('git branch --show-current');
+  const branch = res.stdout.trim();
+  const localconfig: Config = yaml.load(fs.readFileSync(`env/${branch}.yaml`, { encoding: 'utf-8' })) as Config;
+  if (!localconfig.name) {
+    throw new Error('Name variable missing.');
+  }
+  if (!localconfig.ssm_config_version) {
+    throw new Error('ssm_config_version missing.');
+  }
+
   const ssm = new SSMClient({ region: env.region });
   const ssmCmd = new GetParameterCommand({
-    Name: `/${name}/config.yaml:2`,
+    Name: `/${localconfig.name}/config.yaml:${localconfig.ssm_config_version}`,
   });
   const ssmOut: GetParameterCommandOutput = await ssm.send(ssmCmd);
   console.log(`Using config version ${ssmOut.Parameter!.Version!}`);
@@ -45,9 +65,9 @@ async function main() {
     throw new Error('Pubkey variable missing.');
   }
 
-  const pipeline = new PipelineStack(app, name, { ...config, name, env });
+  const pipeline = new PipelineStack(app, localconfig.name, { ...config, name: localconfig.name, env });
 
-  cdk.Tags.of(pipeline).add('Project', name);
+  cdk.Tags.of(pipeline).add('Project', localconfig.name);
 
   app.synth();
 }
