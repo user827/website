@@ -17,7 +17,7 @@ Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 # Setup your own site
 - Configure hosted zone for a domain.
 - Create a codestar connection for connectionArn.
-- Configure ssm parameter /_NAME_/config.yaml using config.yaml.template.
+- Configure ssm parameter /<name>/config.yaml using config.yaml.template.
 
 ```
 npm ci
@@ -27,13 +27,13 @@ npx cdk bootstrap aws://<accountid>/us-east-1
 
 Deploy the website to check everything is OK.
 ```
-AWS_PROFILE=<profile> npx cdk deploy '_NAME_/Website/**'
+AWS_PROFILE=<profile> npx cdk deploy '<name>/Website/**'
 
 ```
 
 Deploy the pipeline.
 ```
-AWS_PROFILE=<profile> npx cdk deploy _NAME_
+AWS_PROFILE=<profile> npx cdk deploy <name>
 ```
 
 ## Project init
