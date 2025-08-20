@@ -27,13 +27,10 @@ async function main() {
   if (!localconfig.name) {
     throw new Error('Name variable missing.');
   }
-  if (!localconfig.ssm_config_version) {
-    throw new Error('ssm_config_version missing.');
-  }
 
   const ssm = new SSMClient({ region: env.region });
   const ssmCmd = new GetParameterCommand({
-    Name: `/${localconfig.name}/config.yaml:${localconfig.ssm_config_version}`,
+    Name: `/${localconfig.name}/config.yaml`,
   });
   const ssmOut: GetParameterCommandOutput = await ssm.send(ssmCmd);
   console.log(`Using config version ${ssmOut.Parameter!.Version!}`);
