@@ -13,6 +13,9 @@ Pipeline for my website https://user827.com hosted on Amazon CloudFront.
 * `AWS_PROFILE=<profile> npx cdk synth`       emits the synthesized CloudFormation template, for testing the changes
 * `npx cdk list`
 * `npm update` update packages
+* make check
+* make build
+* make deploy
 
 # Setup your own site
 - Configure hosted zone for a domain.
