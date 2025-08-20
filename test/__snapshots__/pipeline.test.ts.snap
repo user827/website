@@ -35,6 +35,7 @@ exports[`pipeline 1`] = `
           },
         ],
         "Name": "test",
+        "PipelineType": "V1",
         "RestartExecutionOnUpdate": true,
         "RoleArn": {
           "Fn::GetAtt": [
@@ -163,7 +164,7 @@ exports[`pipeline 1`] = `
                     "Name": "Synth_Output",
                   },
                 ],
-                "Name": "FileAsset1",
+                "Name": "DeployWithInvalidation_AwsCliLayer_Code",
                 "RoleArn": {
                   "Fn::GetAtt": [
                     "PipelineCodeBuildActionRole226DB0CB",
@@ -189,7 +190,7 @@ exports[`pipeline 1`] = `
                     "Name": "Synth_Output",
                   },
                 ],
-                "Name": "FileAsset2",
+                "Name": "Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code",
                 "RoleArn": {
                   "Fn::GetAtt": [
                     "PipelineCodeBuildActionRole226DB0CB",
@@ -215,7 +216,7 @@ exports[`pipeline 1`] = `
                     "Name": "Synth_Output",
                   },
                 ],
-                "Name": "FileAsset3",
+                "Name": "DeployWithInvalidation_Asset1",
                 "RoleArn": {
                   "Fn::GetAtt": [
                     "PipelineCodeBuildActionRole226DB0CB",
@@ -252,16 +253,16 @@ exports[`pipeline 1`] = `
                       ],
                     ],
                   },
-                  "StackName": "Website-S3Stack",
-                  "TemplateConfiguration": "Synth_Output::assembly-test-Website/testWebsiteS3StackEA3BE206.template.json.config.json",
-                  "TemplatePath": "Synth_Output::assembly-test-Website/testWebsiteS3StackEA3BE206.template.json",
+                  "StackName": "Website-WebsiteStack",
+                  "TemplateConfiguration": "Synth_Output::assembly-test-Website/testWebsiteWebsiteStackB2D78862.template.json.config.json",
+                  "TemplatePath": "Synth_Output::assembly-test-Website/testWebsiteWebsiteStackB2D78862.template.json",
                 },
                 "InputArtifacts": [
                   {
                     "Name": "Synth_Output",
                   },
                 ],
-                "Name": "S3Stack.Prepare",
+                "Name": "Prepare",
                 "Region": "us-east-1",
                 "RoleArn": {
                   "Fn::Join": [
@@ -287,9 +288,9 @@ exports[`pipeline 1`] = `
                 "Configuration": {
                   "ActionMode": "CHANGE_SET_EXECUTE",
                   "ChangeSetName": "PipelineChange",
-                  "StackName": "Website-S3Stack",
+                  "StackName": "Website-WebsiteStack",
                 },
-                "Name": "S3Stack.Deploy",
+                "Name": "Deploy",
                 "Region": "us-east-1",
                 "RoleArn": {
                   "Fn::Join": [
@@ -304,82 +305,6 @@ exports[`pipeline 1`] = `
                   ],
                 },
                 "RunOrder": 2,
-              },
-              {
-                "ActionTypeId": {
-                  "Category": "Deploy",
-                  "Owner": "AWS",
-                  "Provider": "CloudFormation",
-                  "Version": "1",
-                },
-                "Configuration": {
-                  "ActionMode": "CHANGE_SET_REPLACE",
-                  "Capabilities": "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND",
-                  "ChangeSetName": "PipelineChange",
-                  "RoleArn": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:",
-                        {
-                          "Ref": "AWS::Partition",
-                        },
-                        ":iam::12345:role/cdk-hnb659fds-cfn-exec-role-12345-us-east-1",
-                      ],
-                    ],
-                  },
-                  "StackName": "Website-WebsiteStack",
-                  "TemplateConfiguration": "Synth_Output::assembly-test-Website/testWebsiteWebsiteStackB2D78862.template.json.config.json",
-                  "TemplatePath": "Synth_Output::assembly-test-Website/testWebsiteWebsiteStackB2D78862.template.json",
-                },
-                "InputArtifacts": [
-                  {
-                    "Name": "Synth_Output",
-                  },
-                ],
-                "Name": "WebsiteStack.Prepare",
-                "Region": "us-east-1",
-                "RoleArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12345:role/cdk-hnb659fds-deploy-role-12345-us-east-1",
-                    ],
-                  ],
-                },
-                "RunOrder": 3,
-              },
-              {
-                "ActionTypeId": {
-                  "Category": "Deploy",
-                  "Owner": "AWS",
-                  "Provider": "CloudFormation",
-                  "Version": "1",
-                },
-                "Configuration": {
-                  "ActionMode": "CHANGE_SET_EXECUTE",
-                  "ChangeSetName": "PipelineChange",
-                  "StackName": "Website-WebsiteStack",
-                },
-                "Name": "WebsiteStack.Deploy",
-                "Region": "us-east-1",
-                "RoleArn": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12345:role/cdk-hnb659fds-deploy-role-12345-us-east-1",
-                    ],
-                  ],
-                },
-                "RunOrder": 4,
               },
             ],
             "Name": "Website",
@@ -465,7 +390,7 @@ exports[`pipeline 1`] = `
         "Cache": {
           "Type": "NO_CACHE",
         },
-        "Description": "Pipeline step test/Pipeline/Assets/FileAsset1",
+        "Description": "Pipeline step test/Pipeline/Assets/DeployWithInvalidation_AwsCliLayer_Code",
         "EncryptionKey": "alias/aws/s3",
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
@@ -486,12 +411,12 @@ exports[`pipeline 1`] = `
   "phases": {
     "install": {
       "commands": [
-        "npm install -g cdk-assets@2"
+        "npm install -g cdk-assets@latest"
       ]
     },
     "build": {
       "commands": [
-        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642:12345-us-east-1\\""
+        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:12345-us-east-1-2de3fdb2\\""
       ]
     }
   }
@@ -509,7 +434,7 @@ exports[`pipeline 1`] = `
         "Cache": {
           "Type": "NO_CACHE",
         },
-        "Description": "Pipeline step test/Pipeline/Assets/FileAsset2",
+        "Description": "Pipeline step test/Pipeline/Assets/Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code",
         "EncryptionKey": "alias/aws/s3",
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
@@ -530,12 +455,12 @@ exports[`pipeline 1`] = `
   "phases": {
     "install": {
       "commands": [
-        "npm install -g cdk-assets@2"
+        "npm install -g cdk-assets@latest"
       ]
     },
     "build": {
       "commands": [
-        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"9eb41a5505d37607ac419321497a4f8c21cf0ee1f9b4a6b29aa04301aea5c7fd:12345-us-east-1\\""
+        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"9a1fcb4a7ecba81ad70e9d3fb241f6794497da945dae5f25924e4dd002b65f2d:12345-us-east-1-80a2d6ea\\""
       ]
     }
   }
@@ -553,7 +478,7 @@ exports[`pipeline 1`] = `
         "Cache": {
           "Type": "NO_CACHE",
         },
-        "Description": "Pipeline step test/Pipeline/Assets/FileAsset3",
+        "Description": "Pipeline step test/Pipeline/Assets/DeployWithInvalidation_Asset1",
         "EncryptionKey": "alias/aws/s3",
         "Environment": {
           "ComputeType": "BUILD_GENERAL1_SMALL",
@@ -574,12 +499,12 @@ exports[`pipeline 1`] = `
   "phases": {
     "install": {
       "commands": [
-        "npm install -g cdk-assets@2"
+        "npm install -g cdk-assets@latest"
       ]
     },
     "build": {
       "commands": [
-        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"0bcfa98d8a0e93cb713bc2560116c890a0d46888981db0552e621bada72be8ae:12345-us-east-1\\""
+        "cdk-assets --path \\"assembly-test-Website/testWebsiteWebsiteStackB2D78862.assets.json\\" --verbose publish \\"0bcfa98d8a0e93cb713bc2560116c890a0d46888981db0552e621bada72be8ae:12345-us-east-1-03841bb9\\""
       ]
     }
   }
@@ -598,24 +523,6 @@ exports[`pipeline 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "Service": "codebuild.amazonaws.com",
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12345:root",
-                    ],
-                  ],
-                },
               },
             },
           ],
@@ -1232,15 +1139,9 @@ exports[`pipeline 1`] = `
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::12345:root",
-                    ],
+                  "Fn::GetAtt": [
+                    "PipelineRoleB27FAA37",
+                    "Arn",
                   ],
                 },
               },

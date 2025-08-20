@@ -10,7 +10,6 @@ import {
   aws_s3 as s3,
   aws_s3_deployment as s3deploy,
   aws_route53 as route53,
-  aws_iam as iam,
   aws_cloudfront as cloudfront,
   aws_cloudfront_origins as cloudfront_origins,
   RemovalPolicy,
@@ -20,8 +19,6 @@ import {
 import { Construct } from 'constructs';
 
 export interface WebsiteProps extends cdk.StackProps {
-  cloudfrontOAI: cloudfront.IOriginAccessIdentity;
-  siteBucket: s3.IBucket;
   zone: string;
   hostedZoneId: string;
   email: string;
@@ -51,6 +48,17 @@ export class WebsiteStack extends cdk.Stack {
       expiration: Duration.days(7),
     });
 
+    const siteBucket = new s3.Bucket(this, 'SiteBucket', {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
+      //removalPolicy: RemovalPolicy.DESTROY,
+      //autoDeleteObjects: true,
+    });
+    new CfnOutput(this, 'Bucket', { value: siteBucket.bucketName });
+
     // CloudFront distribution
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {
       certificate,
@@ -66,7 +74,7 @@ export class WebsiteStack extends cdk.Stack {
         },
       ],
       defaultBehavior: {
-        origin: new cloudfront_origins.S3Origin(props.siteBucket, { originAccessIdentity: props.cloudfrontOAI }),
+        origin: cloudfront_origins.S3BucketOrigin.withOriginAccessControl(siteBucket),
         compress: true,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -90,7 +98,7 @@ export class WebsiteStack extends cdk.Stack {
     // Deploy site contents to S3 bucket
     new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
       sources: [s3deploy.Source.asset('./site-contents')],
-      destinationBucket: props.siteBucket,
+      destinationBucket: siteBucket,
       distribution,
       distributionPaths: ['/*'],
     });
@@ -180,46 +188,6 @@ export class WebsiteStack extends cdk.Stack {
   }
 }
 
-export interface S3Props extends cdk.StackProps {
-  zone: string;
-}
-
-export class S3Stack extends cdk.Stack {
-  public readonly siteBucket: s3.IBucket;
-  public readonly cloudfrontOAI: cloudfront.OriginAccessIdentity;
-
-  constructor(scope: Construct, id: string, props: S3Props) {
-    super(scope, id, props);
-
-    this.cloudfrontOAI = new cloudfront.OriginAccessIdentity(this, 'CloudfrontOAI', {
-      comment: `OAI for ${id}`,
-    });
-
-    this.siteBucket = new s3.Bucket(this, 'SiteBucket', {
-      encryption: s3.BucketEncryption.S3_MANAGED,
-      enforceSSL: true,
-      publicReadAccess: false,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      //removalPolicy: RemovalPolicy.DESTROY,
-      //autoDeleteObjects: true,
-    });
-    new CfnOutput(this, 'Bucket', { value: this.siteBucket.bucketName });
-
-    // Grant access to cloudfront
-    const result = this.siteBucket.addToResourcePolicy(new iam.PolicyStatement({
-      actions: ['s3:GetObject'],
-      resources: [this.siteBucket.arnForObjects('*')],
-      principals: [new iam.CanonicalUserPrincipal(this.cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)],
-    }));
-
-    if (!result) {
-      throw new Error('addToResourcePolicy failed');
-    }
-  }
-}
-
-// TODO use arn sourcearn for OAC instead of the deprecated OAI
-// https://github.com/aws/aws-cdk/issues/21771
 // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html
 
 // https://aws.amazon.com/premiumsupport/knowledge-center/cloudfront-serve-static-website/

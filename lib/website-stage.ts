@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { WebsiteStack, S3Stack } from '../lib/website-stack';
+import { WebsiteStack } from '../lib/website-stack';
 
 export interface WebsiteProps extends cdk.StageProps {
   zone: string;
@@ -9,7 +9,6 @@ export interface WebsiteProps extends cdk.StageProps {
 }
 
 export class WebsiteStage extends cdk.Stage {
-  public readonly s3: S3Stack;
   public readonly website: WebsiteStack;
 
   constructor(scope: Construct, id: string, props: WebsiteProps) {
@@ -20,15 +19,8 @@ export class WebsiteStage extends cdk.Stage {
     }
     const env = props.env;
 
-    this.s3 = new S3Stack(this, 'S3Stack', {
-      env: { account: env.account, region: 'us-east-1' },
-      zone: props.zone,
-    });
-
     this.website = new WebsiteStack(this, 'WebsiteStack', {
       env: { account: env.account, region: 'us-east-1' },
-      cloudfrontOAI: this.s3.cloudfrontOAI,
-      siteBucket: this.s3.siteBucket,
       zone: props.zone,
       hostedZoneId: props.hostedZoneId,
       email: props.email,

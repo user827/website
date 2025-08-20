@@ -1,200 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`s3 1`] = `
-{
-  "Outputs": {
-    "Bucket": {
-      "Value": {
-        "Ref": "SiteBucket397A1860",
-      },
-    },
-    "ExportsOutputFnGetAttSiteBucket397A1860ArnB404F589": {
-      "Export": {
-        "Name": "test-S3Stack:ExportsOutputFnGetAttSiteBucket397A1860ArnB404F589",
-      },
-      "Value": {
-        "Fn::GetAtt": [
-          "SiteBucket397A1860",
-          "Arn",
-        ],
-      },
-    },
-    "ExportsOutputFnGetAttSiteBucket397A1860RegionalDomainName3CF658E3": {
-      "Export": {
-        "Name": "test-S3Stack:ExportsOutputFnGetAttSiteBucket397A1860RegionalDomainName3CF658E3",
-      },
-      "Value": {
-        "Fn::GetAtt": [
-          "SiteBucket397A1860",
-          "RegionalDomainName",
-        ],
-      },
-    },
-    "ExportsOutputRefCloudfrontOAI6D521D0D62AFE01C": {
-      "Export": {
-        "Name": "test-S3Stack:ExportsOutputRefCloudfrontOAI6D521D0D62AFE01C",
-      },
-      "Value": {
-        "Ref": "CloudfrontOAI6D521D0D",
-      },
-    },
-    "ExportsOutputRefSiteBucket397A1860ADBF1315": {
-      "Export": {
-        "Name": "test-S3Stack:ExportsOutputRefSiteBucket397A1860ADBF1315",
-      },
-      "Value": {
-        "Ref": "SiteBucket397A1860",
-      },
-    },
-  },
-  "Parameters": {
-    "BootstrapVersion": {
-      "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-  },
-  "Resources": {
-    "CloudfrontOAI6D521D0D": {
-      "Properties": {
-        "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "OAI for S3Stack",
-        },
-      },
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
-    },
-    "SiteBucket397A1860": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256",
-              },
-            },
-          ],
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
-        "Tags": [
-          {
-            "Key": "aws-cdk:cr-owned:5e63352d",
-            "Value": "true",
-          },
-        ],
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "SiteBucketPolicy3AC1D0F8": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "SiteBucket397A1860",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false",
-                },
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*",
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "SiteBucket397A1860",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "SiteBucket397A1860",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": {
-                "CanonicalUser": {
-                  "Fn::GetAtt": [
-                    "CloudfrontOAI6D521D0D",
-                    "S3CanonicalUserId",
-                  ],
-                },
-              },
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "SiteBucket397A1860",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
-  },
-  "Rules": {
-    "CheckBootstrapVersion": {
-      "Assertions": [
-        {
-          "Assert": {
-            "Fn::Not": [
-              {
-                "Fn::Contains": [
-                  [
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                  ],
-                  {
-                    "Ref": "BootstrapVersion",
-                  },
-                ],
-              },
-            ],
-          },
-          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
-        },
-      ],
-    },
-  },
-}
-`;
-
 exports[`website 1`] = `
 {
   "Mappings": {
@@ -208,6 +13,11 @@ exports[`website 1`] = `
     },
   },
   "Outputs": {
+    "Bucket": {
+      "Value": {
+        "Ref": "SiteBucket397A1860",
+      },
+    },
     "DistributionId": {
       "Value": {
         "Ref": "SiteDistribution3FF9535D",
@@ -292,7 +102,7 @@ exports[`website 1`] = `
       "Properties": {
         "Code": {
           "S3Bucket": "cdk-hnb659fds-assets-12345-us-east-1",
-          "S3Key": "9eb41a5505d37607ac419321497a4f8c21cf0ee1f9b4a6b29aa04301aea5c7fd.zip",
+          "S3Key": "9a1fcb4a7ecba81ad70e9d3fb241f6794497da945dae5f25924e4dd002b65f2d.zip",
         },
         "Environment": {
           "Variables": {
@@ -311,7 +121,7 @@ exports[`website 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.11",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -401,14 +211,20 @@ exports[`website 1`] = `
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::ImportValue": "test-S3Stack:ExportsOutputFnGetAttSiteBucket397A1860ArnB404F589",
+                  "Fn::GetAtt": [
+                    "SiteBucket397A1860",
+                    "Arn",
+                  ],
                 },
                 {
                   "Fn::Join": [
                     "",
                     [
                       {
-                        "Fn::ImportValue": "test-S3Stack:ExportsOutputFnGetAttSiteBucket397A1860ArnB404F589",
+                        "Fn::GetAtt": [
+                          "SiteBucket397A1860",
+                          "Arn",
+                        ],
                       },
                       "/*",
                     ],
@@ -450,7 +266,7 @@ exports[`website 1`] = `
               {
                 "Ref": "SiteDistribution3FF9535D",
               },
-              "","Region","Global",{"period":600,"stat":"Sum"}]],"yAxis":{}}},{"type":"metric","width":6,"height":6,"x":6,"y":0,"properties":{"view":"timeSeries","title":"Errors","region":"",
+              "","Region","Global",{"region":"us-east-1","period":600,"stat":"Sum"}]],"yAxis":{}}},{"type":"metric","width":6,"height":6,"x":6,"y":0,"properties":{"view":"timeSeries","title":"Errors","region":"",
               {
                 "Ref": "AWS::Region",
               },
@@ -458,11 +274,11 @@ exports[`website 1`] = `
               {
                 "Ref": "SiteDistribution3FF9535D",
               },
-              "","Region","Global",{"period":60}],["AWS/CloudFront","5xxErrorRate","DistributionId","",
+              "","Region","Global",{"region":"us-east-1","period":60}],["AWS/CloudFront","5xxErrorRate","DistributionId","",
               {
                 "Ref": "SiteDistribution3FF9535D",
               },
-              "","Region","Global",{"period":600}]],"yAxis":{}}}]}",
+              "","Region","Global",{"region":"us-east-1","period":600}]],"yAxis":{}}}]}",
             ],
           ],
         },
@@ -474,7 +290,7 @@ exports[`website 1`] = `
       "Properties": {
         "Content": {
           "S3Bucket": "cdk-hnb659fds-assets-12345-us-east-1",
-          "S3Key": "e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642.zip",
+          "S3Key": "c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -484,7 +300,7 @@ exports[`website 1`] = `
       "DeletionPolicy": "Delete",
       "Properties": {
         "DestinationBucketName": {
-          "Fn::ImportValue": "test-S3Stack:ExportsOutputRefSiteBucket397A1860ADBF1315",
+          "Ref": "SiteBucket397A1860",
         },
         "DistributionId": {
           "Ref": "SiteDistribution3FF9535D",
@@ -492,6 +308,7 @@ exports[`website 1`] = `
         "DistributionPaths": [
           "/*",
         ],
+        "OutputObjectKeys": true,
         "Prune": true,
         "ServiceToken": {
           "Fn::GetAtt": [
@@ -643,6 +460,132 @@ exports[`website 1`] = `
       },
       "Type": "AWS::Route53::RecordSet",
     },
+    "SiteBucket397A1860": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:cr-owned:5e63352d",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "SiteBucketPolicy3AC1D0F8": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "SiteBucket397A1860",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "SiteBucket397A1860",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "SiteBucket397A1860",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:GetObject",
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":cloudfront::",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":distribution/",
+                        {
+                          "Ref": "SiteDistribution3FF9535D",
+                        },
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "SiteBucket397A1860",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
     "SiteCertificate38C247F6": {
       "Properties": {
         "DomainName": "test",
@@ -710,21 +653,20 @@ exports[`website 1`] = `
           "Origins": [
             {
               "DomainName": {
-                "Fn::ImportValue": "test-S3Stack:ExportsOutputFnGetAttSiteBucket397A1860RegionalDomainName3CF658E3",
+                "Fn::GetAtt": [
+                  "SiteBucket397A1860",
+                  "RegionalDomainName",
+                ],
               },
               "Id": "testWebsiteStackSiteDistributionOrigin15B6C2BD0",
+              "OriginAccessControlId": {
+                "Fn::GetAtt": [
+                  "SiteDistributionOrigin1S3OriginAccessControl7D960FE6",
+                  "Id",
+                ],
+              },
               "S3OriginConfig": {
-                "OriginAccessIdentity": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "origin-access-identity/cloudfront/",
-                      {
-                        "Fn::ImportValue": "test-S3Stack:ExportsOutputRefCloudfrontOAI6D521D0D62AFE01C",
-                      },
-                    ],
-                  ],
-                },
+                "OriginAccessIdentity": "",
               },
             },
           ],
@@ -738,6 +680,17 @@ exports[`website 1`] = `
         },
       },
       "Type": "AWS::CloudFront::Distribution",
+    },
+    "SiteDistributionOrigin1S3OriginAccessControl7D960FE6": {
+      "Properties": {
+        "OriginAccessControlConfig": {
+          "Name": "testWebsiteStackSiteDistribuOrigin1S3OriginAccessControl178170CF",
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4",
+        },
+      },
+      "Type": "AWS::CloudFront::OriginAccessControl",
     },
     "TopicRule40A4EA44": {
       "Type": "AWS::SNS::Topic",
